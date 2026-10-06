@@ -24,6 +24,59 @@ A full-stack **Java Enterprise Web Application** engineered to provide seamless 
 
 ---
 
+## 🏛️ Code & System Architecture
+
+MetroCare follows an enterprise-grade **4-Tier MVC (Model-View-Controller) Architecture** ensuring high cohesion, loose coupling, and clear separation of concerns:
+
+```mermaid
+graph TD
+    subgraph Presentation_Layer ["1. Presentation Layer (View)"]
+        UI1["JSP Dynamic Templates (Admin, Doctor, Patient)"]
+        UI2["Interactive HTML5 / CSS3 / JavaScript (Assets)"]
+    end
+
+    subgraph Security_Controller_Layer ["2. Security & Controller Layer"]
+        F1["AuthenticationFilter (Role-Based Access & Anti-Cache)"]
+        S1["Admin Servlets (Users, Appointments, Analytics, Settings)"]
+        S2["Doctor Servlets (Schedule, Consultations, Records)"]
+        S3["Patient Servlets (Booking, Search, Feedback, History)"]
+    end
+
+    subgraph Business_Model_Layer ["3. Business & Domain Layer"]
+        M1["OOP Models (User, Admin, Doctor, Patient, Appointment)"]
+        M2["Validation & Security (ValidationUtil, PasswordUtil SHA-256)"]
+        M3["Async Workers (NotificationThreadService ExecutorPool)"]
+    end
+
+    subgraph Persistence_Layer ["4. Data Access Layer (DAO)"]
+        D1["GenericDAO Interface & BaseDAO Abstraction"]
+        D2["Entity DAOs (UserDAO, DoctorDAO, PatientDAO, AppointmentDAO...)"]
+        D3["Atomic Transactions (commit / rollback) & PreparedStatements"]
+    end
+
+    subgraph Database_Layer ["5. Database Infrastructure"]
+        DB1["DBConnection Factory (Singleton Driver Manager)"]
+        DB2[("MySQL 8.x Database / Embedded H2 In-Memory DB")]
+    end
+
+    Presentation_Layer --> Security_Controller_Layer
+    Security_Controller_Layer --> Business_Model_Layer
+    Security_Controller_Layer --> Persistence_Layer
+    Persistence_Layer --> Database_Layer
+```
+
+### 🧩 Architectural Layers & Design Patterns
+
+| Layer | Primary Responsibilities | Design Patterns & Technologies |
+| :--- | :--- | :--- |
+| **Presentation (View)** | Renders dynamic role-tailored dashboards, consultation booking UI, and interactive feedback forms | JSP, JSTL, HTML5, Custom Responsive CSS, Vanilla JS |
+| **Controller & Security** | Intercepts HTTP requests, verifies session authorization, validates inputs, and coordinates responses | `HttpServlet` (`doGet`/`doPost`), `Filter`, Front-Controller dispatching |
+| **Domain & Business** | Implements core business logic, user inheritance hierarchy, validation, and async tasks | OOP Inheritance, Polymorphism, Singleton (`NotificationThreadService`) |
+| **Persistence (DAO)** | Handles parameterized database queries, prevents SQL injection, and manages atomic transactions | Data Access Object (DAO) Pattern, `GenericDAO<T, ID>`, PreparedStatements |
+| **Database (JDBC)** | Dual-database connectivity supporting production MySQL and zero-config in-memory H2 | JDBC Connection Factory, Driver Manager, Connection Pooling |
+
+---
+
 ## 🌟 Key Features & Modules
 
 ### 👑 Administrator Portal
@@ -43,17 +96,6 @@ A full-stack **Java Enterprise Web Application** engineered to provide seamless 
 - **Dynamic Slot Booking**: Real-time conflict-free appointment booking with automatic slot calculation.
 - **Medical History**: Access past clinical notes, diagnosis records, and download prescriptions.
 - **Doctor Feedback**: Submit star ratings and clinical reviews after consultation completion.
-
----
-
-## 🏗️ Technical Architecture & Design Highlights
-
-- **4-Tier MVC Architecture**: Strict separation of concerns between Model POJOs, JDBC DAOs, Controller Servlets, and JSP/HTML views.
-- **Object-Oriented Design**: Full inheritance hierarchy (`User` $\to$ `Admin`, `Doctor`, `Patient`), encapsulation, polymorphism, and custom interface contracts.
-- **Robust JDBC Integration**: Parameterized `PreparedStatement` queries preventing SQL injection with atomic transaction management (`commit`/`rollback`).
-- **Asynchronous Multithreading**: Background notification worker thread pool (`ExecutorService`) for non-blocking email/SMS alerts.
-- **Dual Database Engine**: Out-of-the-box support for both **MySQL 8.x** and **Embedded H2 In-Memory DB** (zero setup required for live demo).
-- **Role-Based Security**: Centralized `AuthenticationFilter` for session validation, access control, and anti-cache HTTP headers.
 
 ---
 
