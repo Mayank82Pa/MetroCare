@@ -13,14 +13,14 @@ A full-stack **Java Enterprise Web Application** engineered to provide seamless 
 
 ---
 
-## 👥 Project Team & Contributors
+## 👥 Project Team
 
-| Role | Name | Key Contributions & Modules |
-| :--- | :--- | :--- |
-| 👑 **Team Leader** | **Mayank Patel** | Core Architecture, User Hierarchy & Admin Management Module |
-| 👨‍💻 **Team Member** | **Kabir Kumar** | Doctor Portal, Shift Scheduling & Medical Records Engine |
-| 👨‍💻 **Team Member** | **Abhinav Kumar** | Patient Booking Flow, Doctor Search & Feedback System |
-| 👨‍💻 **Team Member** | **Shashank Mishra** | Database Design, JDBC DAOs, Security Filter & Testing |
+| Role | Name |
+| :--- | :--- |
+| 👑 **Team Leader** | **Mayank Patel** |
+| 👨‍💻 **Team Member** | **Kabir Kumar** |
+| 👨‍💻 **Team Member** | **Abhinav Kumar** |
+| 👨‍💻 **Team Member** | **Shashank Mishra** |
 
 ---
 
