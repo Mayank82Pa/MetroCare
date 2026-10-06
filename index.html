@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroCare - Online Healthcare Management System (Local Preview)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="src/main/webapp/assets/css/style.css">
+    
+    <!-- Phosphor / FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Interactive Preview Navigation Bar */
+        .preview-banner {
+            background: linear-gradient(90deg, #0f172a, #1e293b);
+            color: #94a3b8;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .preview-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .preview-tab {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .preview-tab:hover, .preview-tab.active {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+        }
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Local Preview Quick Switcher Bar -->
+    <div class="preview-banner">
+        <div>
+            <span style="color: #38bdf8; font-weight: 700;"><i class="fa-solid fa-laptop-code"></i> Frontend Local Preview</span>
+            <span style="margin-left: 0.5rem; color: #64748b;">(Switch views below)</span>
+        </div>
+        <div class="preview-tabs">
+            <button class="preview-tab active" onclick="switchTab('landing', this)"><i class="fa-solid fa-house"></i> Landing Page</button>
+            <button class="preview-tab" onclick="switchTab('login', this)"><i class="fa-solid fa-lock"></i> Sign In</button>
+            <button class="preview-tab" onclick="switchTab('register', this)"><i class="fa-solid fa-user-plus"></i> Patient Register</button>
+            <button class="preview-tab" onclick="switchTab('patient-dash', this)"><i class="fa-solid fa-heart-pulse"></i> Patient Portal</button>
+            <button class="preview-tab" onclick="switchTab('doctor-dash', this)"><i class="fa-solid fa-stethoscope"></i> Doctor Portal</button>
+            <button class="preview-tab" onclick="switchTab('admin-dash', this)"><i class="fa-solid fa-shield-halved"></i> Admin Portal</button>
+        </div>
+    </div>
+
+    <!-- MAIN NAVBAR -->
+    <nav class="navbar">
+        <a href="javascript:void(0)" onclick="switchTab('landing')" class="navbar-brand">
+            <i class="fa-solid fa-heart-pulse logo-icon"></i>
+            <span>MetroCare</span>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="javascript:void(0)" onclick="switchTab('landing')" class="nav-link">Home</a></li>
+            <li><a href="javascript:void(0)" onclick="switchTab('patient-dash')" class="nav-link">Find Doctors</a></li>
+            <li><a href="javascript:void(0)" onclick="switchTab('login')" class="btn btn-outline btn-sm">Sign In</a></li>
+            <li><a href="javascript:void(0)" onclick="switchTab('register')" class="btn btn-primary btn-sm">Register</a></li>
+        </ul>
+    </nav>
+
+    <!-- VIEW 1: LANDING PAGE -->
+    <div id="view-landing" class="view-section active">
+        <section class="hero-section">
+            <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+                <span class="badge badge-confirmed" style="background: rgba(224, 242, 254, 0.2); color: #7dd3fc; margin-bottom: 1.5rem; padding: 0.5rem 1.25rem; display: inline-block;">
+                    <i class="fa-solid fa-sparkles"></i> Next-Gen Healthcare Management
+                </span>
+                <h1 class="hero-title" style="color: #ffffff; margin-bottom: 1rem;">Intelligent Healthcare at Your Fingertips</h1>
+                <p class="hero-subtitle" style="color: #e2e8f0; max-width: 700px; margin: 0 auto 2rem auto; font-size: 1.15rem;">
+                    Seamlessly connect with top-rated medical specialists, manage digital prescriptions, schedule consultations in real-time, and track your health journey.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="javascript:void(0)" onclick="switchTab('patient-dash')" class="btn btn-primary btn-lg">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find a Doctor
+                    </a>
+                    <a href="javascript:void(0)" onclick="switchTab('register')" class="btn btn-secondary btn-lg" style="border: 1px solid rgba(255,255,255,0.2);">
+                        <i class="fa-solid fa-user-plus"></i> Patient Portal Sign Up
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <main class="main-content">
+            <div style="margin-bottom: 3.5rem;">
+                <div style="text-align: center; margin-bottom: 2.5rem;">
+                    <h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">Comprehensive Care for Everyone</h2>
+                    <p style="color: var(--text-muted);">Empowering Administrators, Doctors, and Patients with dedicated workflows.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                    <!-- Admin Role Card -->
+                    <div class="card" style="border-top: 4px solid var(--primary);">
+                        <div class="stat-icon blue" style="margin-bottom: 1.25rem;"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 style="margin-bottom: 0.75rem;">Admin Management</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                            Full operational control: manage doctors and patient profiles, inspect all appointments, configure hospital parameters, and monitor live analytics.
+                        </p>
+                        <a href="javascript:void(0)" onclick="switchTab('admin-dash')" class="btn btn-outline-primary btn-sm">Admin Access &rarr;</a>
+                    </div>
+
+                    <!-- Doctor Role Card -->
+                    <div class="card" style="border-top: 4px solid var(--accent);">
+                        <div class="stat-icon" style="background-color: #cffafe; color: #0891b2; margin-bottom: 1.25rem;"><i class="fa-solid fa-stethoscope"></i></div>
+                        <h3 style="margin-bottom: 0.75rem;">Doctor Portal</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                            Manage customizable consultation schedules, review upcoming patient queues, update diagnoses, prescribe medications, and inspect patient feedback.
+                        </p>
+                        <a href="javascript:void(0)" onclick="switchTab('doctor-dash')" class="btn btn-outline-primary btn-sm">Doctor Access &rarr;</a>
+                    </div>
+
+                    <!-- Patient Role Card -->
+                    <div class="card" style="border-top: 4px solid var(--success);">
+                        <div class="stat-icon green" style="margin-bottom: 1.25rem;"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <h3 style="margin-bottom: 0.75rem;">Patient Experience</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                            Search specialists by medical department, view real-time open slots, book instant consultations, download medical histories, and rate doctors.
+                        </p>
+                        <a href="javascript:void(0)" onclick="switchTab('patient-dash')" class="btn btn-outline-primary btn-sm">Get Started &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo Credentials Helper Card -->
+            <div class="card" style="background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%); border: 1px solid #bbf7d0; margin-bottom: 3rem;">
+                <div style="display: flex; gap: 1rem; align-items: flex-start;">
+                    <div class="stat-icon green" style="width: 44px; height: 44px; font-size: 1.2rem;"><i class="fa-solid fa-key"></i></div>
+                    <div style="flex: 1;">
+                        <h4 style="color: #166534; margin-bottom: 0.5rem;">Quick Evaluation Demo Credentials</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; font-size: 0.9rem; color: #14532d;">
+                            <div>
+                                <strong>Admin Portal:</strong><br/>
+                                Email: <code>admin@healthcare.com</code><br/>
+                                Password: <code>admin123</code>
+                            </div>
+                            <div>
+                                <strong>Doctor Portal:</strong><br/>
+                                Email: <code>dr.sharma@healthcare.com</code><br/>
+                                Password: <code>doctor123</code>
+                            </div>
+                            <div>
+                                <strong>Patient Portal:</strong><br/>
+                                Email: <code>rahul@gmail.com</code><br/>
+                                Password: <code>patient123</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VIEW 2: SIGN IN -->
+    <div id="view-login" class="view-section">
+        <div class="main-content" style="max-width: 520px; margin-top: 3rem;">
+            <div class="card" style="padding: 2.5rem; box-shadow: var(--shadow-lg);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="stat-icon blue" style="margin: 0 auto 1rem auto; width: 60px; height: 60px; font-size: 1.8rem;">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem;">Welcome Back</h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Sign in to access your healthcare portal</p>
+                </div>
+
+                <form id="previewLoginForm" onsubmit="handlePreviewLogin(event)">
+                    <div class="form-group" style="margin-bottom: 1.25rem;">
+                        <label class="form-label" for="emailInput">Email Address</label>
+                        <input type="email" id="emailInput" name="email" class="form-control" required placeholder="name@example.com" value="admin@healthcare.com">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label" for="passwordInput">Password</label>
+                        <input type="password" id="passwordInput" name="password" class="form-control" required placeholder="••••••••" value="admin123">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In to Account
+                    </button>
+                </form>
+
+                <!-- Quick Demo Fill Buttons -->
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">Quick Demo Autofill:</p>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="autofill('admin@healthcare.com', 'admin123')">Admin</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="autofill('dr.sharma@healthcare.com', 'doctor123')">Doctor</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="autofill('rahul@gmail.com', 'patient123')">Patient</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                    Don't have an account? <a href="javascript:void(0)" onclick="switchTab('register')" style="color: var(--primary); font-weight: 600;">Create Patient Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: PATIENT REGISTRATION -->
+    <div id="view-register" class="view-section">
+        <div class="main-content" style="max-width: 680px; margin-top: 2rem;">
+            <div class="card" style="padding: 2.5rem; box-shadow: var(--shadow-lg);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="stat-icon green" style="margin: 0 auto 1rem auto; width: 60px; height: 60px; font-size: 1.8rem;">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <h2 style="font-size: 1.8rem;">Create Patient Account</h2>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Join MetroCare to book specialist doctors and manage digital records</p>
+                </div>
+
+                <form onsubmit="event.preventDefault(); alert('Demo Registration: Form inputs validated successfully!');">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" required placeholder="e.g. John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" required placeholder="john@example.com">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" required placeholder="9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select class="form-control">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Blood Group</label>
+                            <select class="form-control">
+                                <option>O+</option>
+                                <option>A+</option>
+                                <option>B+</option>
+                                <option>AB+</option>
+                                <option>O-</option>
+                                <option>A-</option>
+                                <option>B-</option>
+                                <option>AB-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" required placeholder="Minimum 6 characters">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+                        <i class="fa-solid fa-id-card"></i> Complete Registration
+                    </button>
+                </form>
+
+                <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                    Already have an account? <a href="javascript:void(0)" onclick="switchTab('login')" style="color: var(--primary); font-weight: 600;">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 4: PATIENT PORTAL DASHBOARD -->
+    <div id="view-patient-dash" class="view-section">
+        <main class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.25rem;">Patient Portal</h2>
+                    <p style="color: var(--text-muted);">Welcome back, Rahul Verma &bull; Blood Group: <strong>O+</strong></p>
+                </div>
+                <button class="btn btn-primary" onclick="alert('Demo: Select from available specialist slots below!')"><i class="fa-solid fa-plus"></i> Book New Appointment</button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">2</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Upcoming Visits</div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon green"><i class="fa-solid fa-prescription"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">5</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Active Prescriptions</div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-file-medical"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">8</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Medical Reports</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor Search & Appointment Table -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Available Specialists</h3>
+                    <span class="badge badge-confirmed" style="background: #e0f2fe; color: #0284c7;">3 Doctors On Duty</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                    <div class="card" style="border: 1px solid var(--border); background: var(--bg-main);">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div class="stat-icon blue" style="width: 48px; height: 48px;"><i class="fa-solid fa-user-doctor"></i></div>
+                            <div>
+                                <h4 style="margin-bottom: 0.2rem;">Dr. Rajesh Sharma</h4>
+                                <span style="font-size: 0.85rem; color: var(--primary); font-weight: 600;">Cardiologist (MBBS, MD)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Specialist in cardiovascular wellness and preventive cardiology.</p>
+                        <button class="btn btn-outline-primary btn-sm" style="width: 100%;" onclick="alert('Slot booked for 10:00 AM!')">Book Consultation (10:00 AM)</button>
+                    </div>
+
+                    <div class="card" style="border: 1px solid var(--border); background: var(--bg-main);">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div class="stat-icon green" style="width: 48px; height: 48px;"><i class="fa-solid fa-user-doctor"></i></div>
+                            <div>
+                                <h4 style="margin-bottom: 0.2rem;">Dr. Sneha Patel</h4>
+                                <span style="font-size: 0.85rem; color: var(--success); font-weight: 600;">Dermatology (MBBS, MD)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Expert in clinical dermatology, skin rejuvenation, and allergies.</p>
+                        <button class="btn btn-outline-primary btn-sm" style="width: 100%;" onclick="alert('Slot booked for 02:30 PM!')">Book Consultation (02:30 PM)</button>
+                    </div>
+
+                    <div class="card" style="border: 1px solid var(--border); background: var(--bg-main);">
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                            <div class="stat-icon" style="width: 48px; height: 48px; background: #cffafe; color: #0891b2;"><i class="fa-solid fa-user-doctor"></i></div>
+                            <div>
+                                <h4 style="margin-bottom: 0.2rem;">Dr. Ananya Roy</h4>
+                                <span style="font-size: 0.85rem; color: #0891b2; font-weight: 600;">Neurologist (MBBS, DM)</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Neurophysiology, migraine treatments, and cognitive healthcare.</p>
+                        <button class="btn btn-outline-primary btn-sm" style="width: 100%;" onclick="alert('Slot booked for 04:00 PM!')">Book Consultation (04:00 PM)</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VIEW 5: DOCTOR PORTAL DASHBOARD -->
+    <div id="view-doctor-dash" class="view-section">
+        <main class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.25rem;">Doctor Consultation Station</h2>
+                    <p style="color: var(--text-muted);">Logged in as: <strong>Dr. Rajesh Sharma</strong> &bull; Cardiology</p>
+                </div>
+                <span class="badge" style="background: #dcfce7; color: #15803d; font-size: 0.9rem; padding: 0.5rem 1rem;"><i class="fa-solid fa-circle-dot"></i> Live Clinic Session Active</span>
+            </div>
+
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1.25rem;">Today's Patient Queue</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border); color: var(--text-muted);">
+                                <th style="padding: 0.75rem;">Token</th>
+                                <th style="padding: 0.75rem;">Patient Name</th>
+                                <th style="padding: 0.75rem;">Time Slot</th>
+                                <th style="padding: 0.75rem;">Reason</th>
+                                <th style="padding: 0.75rem;">Status</th>
+                                <th style="padding: 0.75rem;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 0.75rem; font-weight: 700; color: var(--primary);">#01</td>
+                                <td style="padding: 0.75rem; font-weight: 600;">Rahul Verma</td>
+                                <td style="padding: 0.75rem;">10:00 AM - 10:30 AM</td>
+                                <td style="padding: 0.75rem;">Chest congestion & ECG check</td>
+                                <td style="padding: 0.75rem;"><span class="badge" style="background: #e0f2fe; color: #0369a1;">In Queue</span></td>
+                                <td style="padding: 0.75rem;"><button class="btn btn-primary btn-sm" onclick="alert('Opening clinical prescription form for Rahul Verma...')"><i class="fa-solid fa-notes-medical"></i> Consult & Prescribe</button></td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 0.75rem; font-weight: 700; color: var(--primary);">#02</td>
+                                <td style="padding: 0.75rem; font-weight: 600;">Priya Nair</td>
+                                <td style="padding: 0.75rem;">11:00 AM - 11:30 AM</td>
+                                <td style="padding: 0.75rem;">Routine blood pressure checkup</td>
+                                <td style="padding: 0.75rem;"><span class="badge" style="background: #fef3c7; color: #b45309;">Scheduled</span></td>
+                                <td style="padding: 0.75rem;"><button class="btn btn-outline btn-sm">View Chart</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- VIEW 6: ADMIN PORTAL DASHBOARD -->
+    <div id="view-admin-dash" class="view-section">
+        <main class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.25rem;">Administrator Control Center</h2>
+                    <p style="color: var(--text-muted);">System Status: <strong>Operational</strong> &bull; Database: <strong>Active</strong></p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="alert('Demo: Doctor roster modal opened!')"><i class="fa-solid fa-user-plus"></i> Add New Doctor</button>
+            </div>
+
+            <!-- Metric Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon blue"><i class="fa-solid fa-user-doctor"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">12</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Specialist Doctors</div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">148</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Registered Patients</div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon" style="background: #fef3c7; color: #d97706;"><i class="fa-solid fa-hospital-user"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">320</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Total Consultations</div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="stat-icon" style="background: #e0e7ff; color: #4338ca;"><i class="fa-solid fa-server"></i></div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: 700;">99.9%</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Uptime</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Panel -->
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">System Audit Log & Live Activity</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li style="padding: 0.75rem; background: var(--bg-main); border-radius: 8px; display: flex; justify-content: space-between;">
+                        <span><i class="fa-solid fa-check text-success" style="color: var(--success); margin-right: 0.5rem;"></i> New appointment confirmed for <strong>Dr. Rajesh Sharma</strong> by <strong>Rahul Verma</strong></span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">10 mins ago</span>
+                    </li>
+                    <li style="padding: 0.75rem; background: var(--bg-main); border-radius: 8px; display: flex; justify-content: space-between;">
+                        <span><i class="fa-solid fa-user-plus" style="color: var(--primary); margin-right: 0.5rem;"></i> New patient registered: <strong>Priya Nair</strong></span>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">25 mins ago</span>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="margin-top: auto; background: var(--secondary); color: #94a3b8; padding: 2.5rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 0.9rem;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-heart-pulse" style="color: var(--accent); font-size: 1.25rem;"></i>
+                <strong style="color: #ffffff;">MetroCare Healthcare System</strong>
+            </div>
+            <div>&copy; 2026 Online Healthcare System. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Interactive Tabs Logic -->
+    <script>
+        function switchTab(viewId, btn) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Remove active from all tabs
+            document.querySelectorAll('.preview-tab').forEach(el => el.classList.remove('active'));
+            
+            // Show selected view
+            const target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.classList.add('active');
+            }
+            if (btn) {
+                btn.classList.add('active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function autofill(email, pass) {
+            const emailInput = document.getElementById('emailInput');
+            const passInput = document.getElementById('passwordInput');
+            if (emailInput && passInput) {
+                emailInput.value = email;
+                passInput.value = pass;
+            }
+        }
+
+        function handlePreviewLogin(event) {
+            event.preventDefault();
+            const email = (document.getElementById('emailInput').value || '').trim().toLowerCase();
+            
+            if (email.includes('admin')) {
+                switchTab('admin-dash');
+            } else if (email.includes('doctor') || email.includes('sharma') || email.includes('patel') || email.includes('roy')) {
+                switchTab('doctor-dash');
+            } else {
+                switchTab('patient-dash');
+            }
+        }
+    </script>
+</body>
+</html>

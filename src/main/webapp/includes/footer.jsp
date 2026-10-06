@@ -1,0 +1,9 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+    <footer class="footer">
+        <p>&copy; 2026 MetroCare Healthcare Management System. Built with Java Servlets, JSP & JDBC.</p>
+    </footer>
+
+    <!-- Main JavaScript -->
+    <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+</body>
+</html>
