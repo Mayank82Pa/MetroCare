@@ -24,9 +24,9 @@ A full-stack **Java Enterprise Web Application** engineered to provide seamless 
 
 ---
 
-## 🏛️ Code & System Architecture
+## 🏛️ System & Code Architecture
 
-MetroCare follows an enterprise-grade **4-Tier MVC (Model-View-Controller) Architecture** ensuring high cohesion, loose coupling, and clear separation of concerns:
+MetroCare follows an enterprise-grade **4-Tier MVC Architecture** ensuring high cohesion, loose coupling, and strict separation of concerns:
 
 ```mermaid
 graph TD
@@ -65,15 +65,205 @@ graph TD
     Persistence_Layer --> Database_Layer
 ```
 
-### 🧩 Architectural Layers & Design Patterns
+---
 
-| Layer | Primary Responsibilities | Design Patterns & Technologies |
-| :--- | :--- | :--- |
-| **Presentation (View)** | Renders dynamic role-tailored dashboards, consultation booking UI, and interactive feedback forms | JSP, JSTL, HTML5, Custom Responsive CSS, Vanilla JS |
-| **Controller & Security** | Intercepts HTTP requests, verifies session authorization, validates inputs, and coordinates responses | `HttpServlet` (`doGet`/`doPost`), `Filter`, Front-Controller dispatching |
-| **Domain & Business** | Implements core business logic, user inheritance hierarchy, validation, and async tasks | OOP Inheritance, Polymorphism, Singleton (`NotificationThreadService`) |
-| **Persistence (DAO)** | Handles parameterized database queries, prevents SQL injection, and manages atomic transactions | Data Access Object (DAO) Pattern, `GenericDAO<T, ID>`, PreparedStatements |
-| **Database (JDBC)** | Dual-database connectivity supporting production MySQL and zero-config in-memory H2 | JDBC Connection Factory, Driver Manager, Connection Pooling |
+## 📊 Database Entity-Relationship (ER) Diagram
+
+The persistence schema consists of 8 normalized relational entities with enforced foreign-key constraints:
+
+```mermaid
+erDiagram
+    USERS ||--o| DOCTORS : "extends/has"
+    USERS ||--o| PATIENTS : "extends/has"
+    DOCTORS ||--o{ DOCTOR_SCHEDULE : "defines"
+    DOCTORS ||--o{ APPOINTMENTS : "conducts"
+    PATIENTS ||--o{ APPOINTMENTS : "books"
+    DOCTOR_SCHEDULE ||--o{ APPOINTMENTS : "allocated_in"
+    APPOINTMENTS ||--o| MEDICAL_RECORDS : "generates"
+    APPOINTMENTS ||--o| FEEDBACK : "receives"
+
+    USERS {
+        int user_id PK
+        string name
+        string email UK
+        string password
+        string role
+        string phone
+        string status
+        timestamp created_at
+    }
+
+    DOCTORS {
+        int doctor_id PK
+        int user_id FK
+        string specialization
+        string qualification
+        int experience_years
+        decimal consultation_fee
+        text bio
+    }
+
+    PATIENTS {
+        int patient_id PK
+        int user_id FK
+        date date_of_birth
+        string gender
+        string blood_group
+        text address
+        string emergency_contact
+    }
+
+    DOCTOR_SCHEDULE {
+        int schedule_id PK
+        int doctor_id FK
+        date available_date
+        time start_time
+        time end_time
+        int slot_duration_mins
+        boolean is_available
+    }
+
+    APPOINTMENTS {
+        int appointment_id PK
+        int patient_id FK
+        int doctor_id FK
+        int schedule_id FK
+        date appointment_date
+        time appointment_time
+        string reason
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    MEDICAL_RECORDS {
+        int record_id PK
+        int appointment_id FK
+        int patient_id FK
+        int doctor_id FK
+        text diagnosis
+        text prescription
+        text clinical_notes
+        date follow_up_date
+        timestamp created_at
+    }
+
+    FEEDBACK {
+        int feedback_id PK
+        int appointment_id FK
+        int patient_id FK
+        int doctor_id FK
+        int rating
+        text comments
+        timestamp created_at
+    }
+
+    SYSTEM_SETTINGS {
+        int setting_id PK
+        string setting_key UK
+        string setting_value
+        string description
+    }
+```
+
+---
+
+## 🧬 Object-Oriented Class Hierarchy Diagram
+
+Core domain models structured with polymorphism, interfaces, encapsulation, and type-safe generics:
+
+```mermaid
+classDiagram
+    class Identifiable {
+        <<interface>>
+        +getUserId() int
+        +getRoleDisplayName() String
+    }
+
+    class GenericDAO~T, ID~ {
+        <<interface>>
+        +findById(ID id) T
+        +findAll() List~T~
+        +delete(ID id) boolean
+    }
+
+    class User {
+        <<abstract>>
+        #int userId
+        #String name
+        #String email
+        #String password
+        #String role
+        #String phone
+        #String status
+        +getRoleDisplayName()* String
+        +getProfileSummary() String
+        +isAdmin() boolean
+        +isDoctor() boolean
+        +isPatient() boolean
+    }
+
+    class Admin {
+        +getRoleDisplayName() String
+    }
+
+    class Doctor {
+        -int doctorId
+        -String specialization
+        -String qualification
+        -int experienceYears
+        -double consultationFee
+        +getRoleDisplayName() String
+        +getProfileSummary() String
+    }
+
+    class Patient {
+        -int patientId
+        -Date dateOfBirth
+        -String gender
+        -String bloodGroup
+        +getRoleDisplayName() String
+        +getProfileSummary() String
+    }
+
+    Identifiable <|.. User
+    User <|-- Admin
+    User <|-- Doctor
+    User <|-- Patient
+```
+
+---
+
+## 🔄 Consultation Lifecycle & Booking Flow
+
+Sequence diagram representing a patient appointment booking transaction, atomic database verification, and asynchronous thread notification:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Patient as 🧑‍⚕️ Patient
+    participant Controller as ⚙️ BookAppointmentServlet
+    participant DAO as 🗄️ AppointmentDAO (JDBC)
+    participant DB as 💾 Database (MySQL/H2)
+    participant Thread as ⚡ NotificationThreadService
+
+    Patient->>Controller: POST /patient/book (Doctor, Date, Slot)
+    Controller->>DAO: bookAppointment(Appointment)
+    Note over DAO,DB: conn.setAutoCommit(false)
+    DAO->>DB: SELECT COUNT(*) WHERE doctor_id=? AND slot=?
+    alt Slot is Available (Count == 0)
+        DAO->>DB: INSERT INTO appointments (...)
+        DAO->>DB: conn.commit()
+        DAO-->>Controller: Return generated appointment_id
+        Controller->>Thread: sendAppointmentBookingNotification(Async)
+        Thread-->>Patient: 📧 Background Email/SMS Confirmation
+        Controller-->>Patient: Redirect /patient/appointments (Success)
+    else Conflict / Already Booked
+        DAO->>DB: conn.rollback()
+        DAO-->>Controller: Throw ValidationException
+        Controller-->>Patient: Display 'Slot already taken' Alert
+    end
+```
 
 ---
 
