@@ -12,7 +12,16 @@
 A full-stack **Java Enterprise Web Application** engineered to provide seamless hospital operations, doctor availability scheduling, conflict-free dynamic appointment booking, digital prescriptions, and role-based administration portals.
 
 ---
+## Project Contribution
 
+This project provides an online healthcare
+management system.
+
+### Future Improvements
+- Improve user interface
+- Add input validation
+- Improve documentation
+  
 ## 👥 Project Team
 
 | Role | Name |
